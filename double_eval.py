@@ -11,7 +11,6 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
         agent = DQNAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
-            **conf
         )
         if model_path:
             agent.load_model(model_path)
@@ -36,10 +35,10 @@ def transform_obs(observation):
 
 def run(conf=None, model_paths=None):
     if conf is None:
-        conf = {'num_episodes': 1000}
+        conf = {'num_episodes': 100}
     
     env = create_env()
-    agent1 = create_agent(conf, env, agent="dqn", model_path=model_paths[0] if model_paths else None)
+    agent1 = create_agent(conf, env, agent="rand", model_path=model_paths[0] if model_paths else None)
     agent2 = create_agent(conf, env, agent="dqn", model_path=model_paths[1] if model_paths else None)
     return_list = []
     
@@ -72,6 +71,6 @@ def run(conf=None, model_paths=None):
     return return_list
 
 if __name__ == "__main__":
-    returns = run() # run(model_paths=["path/to/model1.pth", "path/to/model2.pth"])
+    returns = run(model_paths=[None, "models/dqn_single.pth"])
     returns = np.array(returns)
     print(np.mean(returns, axis = 0))

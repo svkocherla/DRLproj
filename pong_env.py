@@ -63,22 +63,13 @@ class PongDoublePlayerEnv(PongSinglePlayerEnv):
 
     def __init__(self, ball_speed=4, bat_speed=4, max_num_rounds=20):
         SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
-        self.observation_space = spaces.Tuple([
-            spaces.Box(
-                low=np.array([0, 0, 0, 0, -ball_speed, -ball_speed]),
-                high=np.array([max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
-                            max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
-                            ball_speed, ball_speed]),
-                shape=(6,)
-            ),
-            spaces.Box(
-                low=np.array([0, 0, 0, 0, -ball_speed, -ball_speed]),
-                high=np.array([max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
-                            max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
-                            ball_speed, ball_speed]),
-                shape=(6,)
-            )
-        ])
+        self.observation_space = spaces.Box(
+            low=np.array([0, 0, 0, 0, -ball_speed, -ball_speed]),
+            high=np.array([max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                        max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                        ball_speed, ball_speed]),
+            shape=(6,)
+        )
         self.action_space = spaces.Discrete(3)
         self.double_action_space = spaces.Tuple(
             [spaces.Discrete(3), spaces.Discrete(3)])
