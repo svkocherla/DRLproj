@@ -5,7 +5,7 @@ import numpy as np
 from pygame.locals import *
 import gym
 from gym import error, spaces, utils
-from gym.utils import seeding
+# from gym.utils import seeding
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

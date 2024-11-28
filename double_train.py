@@ -6,16 +6,18 @@ import numpy as np
 def create_env():
     return PongDoublePlayerEnv()
 
-def create_agent(conf=None, env=None, agent = "dqn"):
+def create_agent(conf=None, env=None, agent="dqn", model_path=None):
     if agent == "dqn":
-        return DQNAgent(
+        agent = DQNAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
-            **conf
         )
+        if model_path:
+            agent.load_model(model_path)
+        return agent
     else:
         return RandomAgent(
-            action_space=env.action_space, 
+            action_space=env.action_space,
             observation_space=env.observation_space,
         )
     
@@ -31,13 +33,13 @@ def transform_obs(observation):
 
     return np.array([ballx, bally, left, right, speedx, speedy])
 
-def run(conf=None, save_path = None):
+def run(conf=None, save_path = None, model_paths = None):
     if conf is None:
-        conf = {'num_episodes': 1000}
+        conf = {'num_episodes': 150}
     
     env = create_env()
-    train_agent = create_agent(conf, env, agent = "dqn")
-    opposing_agent = create_agent(conf, env, agent = "rand")
+    train_agent = create_agent(conf, env, agent="dqn", model_path=model_paths[0] if model_paths else None)
+    opposing_agent = create_agent(conf, env, agent="dqn", model_path=model_paths[1] if model_paths else None)
     return_list = []
     best_return = float('-inf')
     
@@ -53,16 +55,18 @@ def run(conf=None, save_path = None):
         while not done:
             # Select action
             train_action = train_agent.act(observation)
-            opponent_action = opposing_agent.act(transform_obs(observation))
+            opponent_action = opposing_agent.act(transform_obs(observation), greedy=True)
             
             # Take action in environment
-            next_observation, reward, done, _ = env.step((train_action, opponent_action))
-            
+            next_observation, rewards, done, _ = env.step((train_action, opponent_action))
+            train_reward = rewards[0]
+
             # Learn from experience
-            train_agent.learn(reward, next_observation, done)
-            
+            train_agent.learn(train_reward, next_observation, done)
+
+            # update rewards
             observation = next_observation
-            cum_return += reward[0] # train agent reward
+            cum_return += train_reward
         
         # Store episode return
         return_list.append(cum_return)
@@ -92,4 +96,4 @@ def run(conf=None, save_path = None):
     return return_list
 
 if __name__ == "__main__":
-    run()
+    run(save_path = "models/self_train_single_dqn.pth", model_paths=["models/dqn_single.pth", "models/dqn_single.pth"])
