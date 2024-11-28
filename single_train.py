@@ -1,42 +1,30 @@
 from pong_env import PongSinglePlayerEnv
 from agents.dqn_agent import DQNAgent
+from agents.random_agent import RandomAgent
 import numpy as np
 
 def create_env():
     return PongSinglePlayerEnv()
 
-def create_agent(conf=None, env=None):
-    if conf is None:
-        conf = {}
-    
-    default_conf = {
-        'learning_rate': 1e-4,
-        'gamma': 0.99,
-        'epsilon_start': 1.0,
-        'epsilon_final': 0.01,
-        'epsilon_decay': 10000,
-        'memory_size': 10000,
-        'batch_size': 64,
-        'target_update': 10
-    }
-    
-    # Update default configuration with provided configuration
-    for key in conf:
-        if key in default_conf:
-            default_conf[key] = conf[key]
-    
-    return DQNAgent(
-        action_space=env.action_space,
-        observation_space=env.observation_space,
-        **default_conf
-    )
+def create_agent(conf=None, env=None, agent = "dqn"):
+    if agent == "dqn":
+        return DQNAgent(
+            action_space=env.action_space,
+            observation_space=env.observation_space,
+            **conf
+        )
+    else:
+        return RandomAgent(
+            action_space=env.action_space, 
+            observation_space=env.observation_space,
+        )
 
 def run(conf=None):
     if conf is None:
         conf = {'num_episodes': 1000}
     
     env = create_env()
-    agent = create_agent(conf, env)
+    agent = create_agent(conf, env, agent = "dqn")
     return_list = []
     best_return = float('-inf')
     
@@ -44,16 +32,14 @@ def run(conf=None):
     for episode in range(conf['num_episodes']):
         cum_return = 0.0
         observation = env.reset()
-        agent.reset()  # Reset agent's episode-specific variables
+        agent.reset()
         
         # Store first observation
-        agent.last_observation = observation
         done = False
         
         while not done:
             # Select action
             action = agent.act(observation)
-            agent.last_action = action
             
             # Take action in environment
             next_observation, reward, done, _ = env.step(action)
@@ -83,22 +69,10 @@ def run(conf=None):
             print(f"Return: {cum_return:.2f}")
             print(f"50-episode average: {avg_return:.2f}")
             print(f"Best return: {best_return:.2f}")
-            print(f"Epsilon: {agent.get_epsilon():.3f}")
             print("--------------------")
     
     env.close()
     return return_list
 
 if __name__ == "__main__":
-    config = {
-        'num_episodes': 5000,
-        'learning_rate': 1e-3,
-        'gamma': 0.99,
-        'epsilon_start': 1.0,
-        'epsilon_final': 0.01,
-        'epsilon_decay': 20000,
-        'memory_size': 10000,
-        'batch_size': 64,
-        'target_update': 10
-    }
-    run(config)
+    run()

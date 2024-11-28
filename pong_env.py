@@ -58,53 +58,63 @@ class PongSinglePlayerEnv(gym.Env):
         return np.array([ballx, bally, left, right, speedx, speedy])
         
 
-# class PongDoublePlayerEnv(PongSinglePlayerEnv):
-#     metadata = {'render.modes': ['human', 'rgb_array']}
+class PongDoublePlayerEnv(PongSinglePlayerEnv):
+    metadata = {'render.modes': ['human', 'rgb_array']}
 
-#     def __init__(self, ball_speed=4, bat_speed=4, max_num_rounds=20):
-#         SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
-#         self.observation_space = spaces.Tuple([
-#             spaces.Box(
-#                 low=0, high=255, shape=(SCREEN_HEIGHT, SCREEN_WIDTH, 3)),
-#             spaces.Box(
-#                 low=0, high=255, shape=(SCREEN_HEIGHT, SCREEN_WIDTH, 3))
-#         ])
-#         self.action_space = spaces.Tuple(
-#             [spaces.Discrete(3), spaces.Discrete(3)])
+    def __init__(self, ball_speed=4, bat_speed=4, max_num_rounds=20):
+        SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
+        self.observation_space = spaces.Tuple([
+            spaces.Box(
+                low=np.array([0, 0, 0, 0, -ball_speed, -ball_speed]),
+                high=np.array([max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                            max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                            ball_speed, ball_speed]),
+                shape=(6,)
+            ),
+            spaces.Box(
+                low=np.array([0, 0, 0, 0, -ball_speed, -ball_speed]),
+                high=np.array([max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                            max(SCREEN_HEIGHT, SCREEN_WIDTH), max(SCREEN_HEIGHT, SCREEN_WIDTH), 
+                            ball_speed, ball_speed]),
+                shape=(6,)
+            )
+        ])
+        self.action_space = spaces.Discrete(3)
+        self.double_action_space = spaces.Tuple(
+            [spaces.Discrete(3), spaces.Discrete(3)])
 
-#         pygame.init()
-#         self._surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        pygame.init()
+        self._surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-#         self._viewer = None
-#         self._game = PongGame(
-#             has_double_players=True,
-#             window_size=(SCREEN_WIDTH, SCREEN_HEIGHT),
-#             ball_speed=ball_speed,
-#             bat_speed=bat_speed,
-#             max_num_rounds=max_num_rounds)
+        self._viewer = None
+        self._game = PongGame(
+            has_double_players=True,
+            window_size=(SCREEN_WIDTH, SCREEN_HEIGHT),
+            ball_speed=ball_speed,
+            bat_speed=bat_speed,
+            max_num_rounds=max_num_rounds)
 
-#     def _step(self, action):
-#         assert self.action_space.contains(action)
-#         left_player_action, right_player_action = action
-#         bat_directions = [-1, 0, 1]
-#         rewards, done = self._game.step(bat_directions[left_player_action],
-#                                         bat_directions[right_player_action])
-#         obs = self._get_screen_img_double_player()
-#         return (obs, rewards, done, {})
+    def step(self, action):
+        assert self.double_action_space.contains(action)
+        left_player_action, right_player_action = action
+        bat_directions = [-1, 0, 1]
+        rewards, done = self._game.step(bat_directions[left_player_action],
+                                        bat_directions[right_player_action])
+        obs = self._get_state()
+        return (obs, rewards, done, {})
 
-#     def _reset(self):
-#         self._game.reset_game()
-#         obs = self._get_screen_img_double_player()
-#         return obs
+    def reset(self):
+        self._game.reset_game()
+        obs = self._get_state()
+        return obs
+    
+    def _get_state(self):
+        ballx, bally = self._game._ball._rect.x, self._game._ball._rect.y
+        speedx, speedy = self._game._ball.speed_x, self._game._ball.speed_y
+        left = self._game._left_bat._rect.y
+        right = self._game._right_bat._rect.y
+        return np.array([ballx, bally, left, right, speedx, speedy])
 
-#     def _get_screen_img_double_player(self):
-#         self._game.draw(self._surface)
-#         surface_flipped = pygame.transform.flip(self._surface, True, False)
-#         self._game.draw_scoreboard(self._surface)
-#         self._game.draw_scoreboard(surface_flipped)
-#         obs = self._surface_to_img(self._surface)
-#         obs_flip = self._surface_to_img(surface_flipped)
-#         return obs, obs_flip
 
 class PongGame():
     def __init__(self,

@@ -8,5 +8,10 @@ pip install gym
 pip3 install torch torchvision torchaudio
 pip install pygame
 
-## Running
-python3 train.py
+## Training
+python3 single_train.py
+python3 double_train.py
+
+## Evaluating
+python3 single_eval.py
+python3 double_eval.py

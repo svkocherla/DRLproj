@@ -1,10 +1,10 @@
 from agents.base_agent import BaseAgent
 
 # for testing double player env
-class DQNAgent(BaseAgent):
+class RandomAgent(BaseAgent):
     '''Random agent.'''
 
-    def __init__(self, action_space, observation_space, **kwargs):
+    def __init__(self, action_space, observation_space):
         self._action_space = action_space
 
     def act(self, observation, greedy=False):
