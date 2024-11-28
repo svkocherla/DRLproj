@@ -68,8 +68,8 @@ def run(conf=None):
         return_list.append(cum_return)
         
         # Calculate running average
-        if len(return_list) >= 20:
-            avg_return = np.mean(return_list[-20:])
+        if len(return_list) >= 50:
+            avg_return = np.mean(return_list[-50:])
         else:
             avg_return = np.mean(return_list)
         
@@ -81,7 +81,7 @@ def run(conf=None):
         if (episode + 1) % 10 == 0:
             print(f"Episode {episode + 1}/{conf['num_episodes']}")
             print(f"Return: {cum_return:.2f}")
-            print(f"20-episode average: {avg_return:.2f}")
+            print(f"50-episode average: {avg_return:.2f}")
             print(f"Best return: {best_return:.2f}")
             print(f"Epsilon: {agent.get_epsilon():.3f}")
             print("--------------------")
