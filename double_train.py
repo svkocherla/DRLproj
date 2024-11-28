@@ -19,7 +19,7 @@ def create_agent(conf=None, env=None, agent = "dqn"):
             observation_space=env.observation_space,
         )
 
-def run(conf=None):
+def run(conf=None, save_path = None):
     if conf is None:
         conf = {'num_episodes': 1000}
     
@@ -73,6 +73,9 @@ def run(conf=None):
             print(f"50-episode average: {avg_return:.2f}")
             print(f"Best return: {best_return:.2f}")
             print("--------------------")
+    
+    if save_path:
+        train_agent.save_model(save_path)
     
     env.close()
     return return_list

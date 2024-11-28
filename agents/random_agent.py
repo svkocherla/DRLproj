@@ -12,3 +12,9 @@ class RandomAgent(BaseAgent):
 
     def learn(self, reward, next_observation, done):
         pass
+
+    def save_model(self, path):
+        pass
+
+    def load_model(self, path):
+        pass

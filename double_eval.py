@@ -6,26 +6,29 @@ import numpy as np
 def create_env():
     return PongDoublePlayerEnv()
 
-def create_agent(conf=None, env=None, agent = "dqn"):
+def create_agent(conf=None, env=None, agent="dqn", model_path=None):
     if agent == "dqn":
-        return DQNAgent(
+        agent = DQNAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
             **conf
         )
+        if model_path:
+            agent.load_model(model_path)
+        return agent
     else:
         return RandomAgent(
-            action_space=env.action_space, 
+            action_space=env.action_space,
             observation_space=env.observation_space,
         )
-    
-def run(conf=None):
+
+def run(conf=None, model_paths=None):
     if conf is None:
         conf = {'num_episodes': 1000}
     
     env = create_env()
-    agent1 = create_agent(conf, env, agent = "rand")
-    agent2 = create_agent(conf, env, agent = "rand")
+    agent1 = create_agent(conf, env, agent="dqn", model_path=model_paths[0] if model_paths else None)
+    agent2 = create_agent(conf, env, agent="dqn", model_path=model_paths[1] if model_paths else None)
     return_list = []
     
     print("Evaluating...")
@@ -58,7 +61,6 @@ def run(conf=None):
     return return_list
 
 if __name__ == "__main__":
-    returns = run()
+    returns = run() # run(model_paths=["path/to/model1.pth", "path/to/model2.pth"])
     returns = np.array(returns)
-    print(np.mean(returns, axis = 0)) # shoudl give 2 outputs
-    # print(returns.T)
+    print(np.mean(returns, axis = 0))

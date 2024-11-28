@@ -18,3 +18,11 @@ class BaseAgent(object):
 
     def reset(self):
         pass
+
+    @abstractmethod
+    def save_model(self, path):
+        pass
+
+    @abstractmethod
+    def load_model(self, path):
+        pass
