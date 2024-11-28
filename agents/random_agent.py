@@ -1,6 +1,5 @@
 from agents.base_agent import BaseAgent
 
-# for testing double player env
 class RandomAgent(BaseAgent):
     '''Random agent.'''
 

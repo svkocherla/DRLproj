@@ -10,8 +10,7 @@ def create_agent(conf=None, env=None, agent = "dqn"):
     if agent == "dqn":
         return DQNAgent(
             action_space=env.action_space,
-            observation_space=env.observation_space,
-            **conf
+            observation_space=env.observation_space
         )
     else:
         return RandomAgent(
