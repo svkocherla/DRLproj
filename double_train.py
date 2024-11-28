@@ -51,7 +51,7 @@ def transform_obs(observation):
 
     return np.array([ballx, bally, left, right, speedx, speedy])
 
-def run(conf={'num_episodes': 5000}, save_path = None, model_paths = None, types = ['rand', 'rand']):
+def run(conf={'num_episodes': 150}, save_path = None, model_paths = None, types = ['rand', 'rand']):
     
     env = create_env()
     train_agent = create_agent(conf, env, agent=types[0], model_path=model_paths[0] if model_paths else None)
@@ -113,6 +113,6 @@ def run(conf={'num_episodes': 5000}, save_path = None, model_paths = None, types
 
 if __name__ == "__main__":
     conf = {
-        "num_episodes": 150
+        "num_episodes": 300
         }
-    run(conf = conf, save_path = "models/m5.pth", model_paths=["models/ac_single.pth", "models/ac_single.pth"], types = ['ac, ac'])
+    run(conf = conf, save_path = "models/m3.pth", model_paths=["models/dqn_single.pth", "models/dqn_single.pth"], types = ['dqn', 'dqn'])

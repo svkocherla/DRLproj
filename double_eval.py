@@ -1,6 +1,6 @@
 from pong_env import PongDoublePlayerEnv
 from agents.dqn_agent import DQNAgent
-from agents.ac import ActorCriticAgent
+from agents.ac_agent import ACAgent
 from agents.double_dqn import DoubleDQNAgent
 from agents.random_agent import RandomAgent
 import numpy as np
@@ -18,7 +18,7 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
             agent.load_model(model_path)
         return agent
     elif agent == "ac":
-        agent = ActorCriticAgent(
+        agent = ACAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
         )
@@ -89,8 +89,8 @@ def run(conf={'num_episodes': 1000}, model_paths=None, types = ['rand', 'rand'])
 
 if __name__ == "__main__":
     conf = {
-        "num_episodes": 1000
+        "num_episodes": 100
         }
-    returns = run(conf = conf, model_paths=["models/ddqn_single.pth", "models/dqn_single.pth"], types = ['ddqn', 'dqn'])
+    returns = run(conf = conf, model_paths=["models/m3.pth", "models/dqn_single.pth"], types = ['dqn', 'dqn'])
     returns = np.array(returns)
     print(np.mean(returns, axis = 0))

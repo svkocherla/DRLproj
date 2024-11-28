@@ -1,7 +1,7 @@
 from pong_env import PongSinglePlayerEnv
 from agents.dqn_agent import DQNAgent
 from agents.random_agent import RandomAgent
-from agents.ac import ActorCriticAgent
+from agents.ac_agent import ACAgent
 from agents.double_dqn import DoubleDQNAgent
 import numpy as np
 
@@ -18,7 +18,7 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
             agent.load_model(model_path)
         return agent
     elif agent == "ac":
-        agent = ActorCriticAgent(
+        agent = ACAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
         )
