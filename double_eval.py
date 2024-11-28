@@ -54,8 +54,8 @@ def run(conf=None, model_paths=None):
         
         while not done:
             # Select action
-            action1 = agent1.act(observation)
-            action2 = agent2.act(transform_obs(observation))
+            action1 = agent1.act(observation, greedy=True)
+            action2 = agent2.act(transform_obs(observation), greedy=True)
             
             # Take action in environment
             next_observation, reward, done, _ = env.step((action1, action2))

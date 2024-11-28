@@ -11,7 +11,6 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
         agent = DQNAgent(
             action_space=env.action_space,
             observation_space=env.observation_space,
-            **conf
         )
         if model_path:
             agent.load_model(model_path)
@@ -24,7 +23,7 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
 
 def run(conf=None, model_path=None):
     if conf is None:
-        conf = {'num_episodes': 1000}
+        conf = {'num_episodes': 100}
     
     env = create_env()
     agent = create_agent(conf, env, agent="dqn", model_path=model_path)
@@ -41,7 +40,7 @@ def run(conf=None, model_path=None):
         
         while not done:
             # Select action
-            action = agent.act(observation)
+            action = agent.act(observation, greedy=True)
             
             # Take action in environment
             next_observation, reward, done, _ = env.step(action)
@@ -57,6 +56,6 @@ def run(conf=None, model_path=None):
     return return_list
 
 if __name__ == "__main__":
-    returns = run() #run(model_path="path/to/model.pth")
+    returns = run(model_path="models/dqn_single.pth")
     returns = np.array(returns)
     print(np.mean(returns))

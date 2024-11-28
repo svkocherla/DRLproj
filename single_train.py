@@ -20,7 +20,7 @@ def create_agent(conf=None, env=None, agent = "dqn"):
 
 def run(conf=None, save_path=None):
     if conf is None:
-        conf = {'num_episodes': 300}
+        conf = {'num_episodes': 100}
     
     env = create_env()
     agent = create_agent(conf, env, agent = "dqn")
@@ -33,7 +33,6 @@ def run(conf=None, save_path=None):
         observation = env.reset()
         agent.reset()
         
-        # Store first observation
         done = False
         
         while not done:
@@ -77,5 +76,5 @@ def run(conf=None, save_path=None):
     return return_list
 
 if __name__ == "__main__":
-    # run(save_path="models/dqn_single.pth")
-    run()
+    run(save_path="models/dqn_single.pth")
+    # run()
