@@ -230,7 +230,6 @@ class Arena(pygame.sprite.Sprite):
     def centery(self):
         return self._rect.centery
 
-
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y, size, speed):
         self._x_init, self._y_init = x, y
@@ -399,22 +398,24 @@ def main():
     pygame.init()
     pygame.display.set_caption('Pong')
     pygame.mouse.set_visible(0)  # make cursor invisible
-    surface = pygame.display.set_mode((600, 600))
+    surface = pygame.display.set_mode((160, 210))
     fps_clock = pygame.time.Clock()
 
-    game = PongGame(window_size=(400, 300), has_double_players=True)
+    game = PongGame(window_size=(160, 210), has_double_players=True)
+    ball_positions_x = []
 
     while True:  # main game loop
         for event in pygame.event.get():
             if event.type == QUIT:
+                print(f"Min ball x: {min(ball_positions_x)}")
+                print(f"Max ball x: {max(ball_positions_x)}")
                 pygame.quit()
                 sys.exit()
 
-        # Replace this with a suitable step input, e.g., 0 (no movement), 1 (up), or -1 (down).
-        # Here it randomly chooses -1, 0, or 1 as a placeholder.
         left_bat_action = random.choice([-1, 0, 1])
         right_bat_action = random.choice([-1, 0, 1])
-        _, done = game.step(left_bat_action, right_bat_action)  # -1 for AI bat move
+        _, done = game.step(left_bat_action, right_bat_action)
+        ball_positions_x.append(game._ball._rect.x)
 
         if done:
             game.reset_game()

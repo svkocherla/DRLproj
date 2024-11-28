@@ -39,7 +39,7 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
             observation_space=env.observation_space,
         )
     
-SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
+SCREEN_WIDTH = 156
 
 def transform_obs(observation):
     # for second agent in double obs
@@ -51,13 +51,11 @@ def transform_obs(observation):
 
     return np.array([ballx, bally, left, right, speedx, speedy])
 
-def run(conf=None, save_path = None, model_paths = None):
-    if conf is None:
-        conf = {'num_episodes': 150}
+def run(conf={'num_episodes': 150}, save_path = None, model_paths = None, types = ['rand', 'rand']):
     
     env = create_env()
-    train_agent = create_agent(conf, env, agent="ddqn", model_path=model_paths[0] if model_paths else None)
-    opposing_agent = create_agent(conf, env, agent="dqn", model_path=model_paths[1] if model_paths else None)
+    train_agent = create_agent(conf, env, agent=types[0], model_path=model_paths[0] if model_paths else None)
+    opposing_agent = create_agent(conf, env, agent=types[1], model_path=model_paths[1] if model_paths else None)
     return_list = []
     best_return = float('-inf')
     
@@ -114,4 +112,7 @@ def run(conf=None, save_path = None, model_paths = None):
     return return_list
 
 if __name__ == "__main__":
-    run(save_path = "models/m3.pth", model_paths=["models/ddqn_single.pth", "models/dqn_single.pth"])
+    conf = {
+        "num_episodes": 150
+        }
+    run(conf = conf, save_path = "models/m3.pth", model_paths=["models/ddqn_single.pth", "models/dqn_single.pth"], types = ['ddqn, dqn'])
