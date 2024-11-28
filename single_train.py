@@ -1,7 +1,7 @@
 from pong_env import PongSinglePlayerEnv
 from agents.dqn_agent import DQNAgent
 from agents.random_agent import RandomAgent
-from agents.ac import ActorCriticAgent
+from agents.ac_agent import ACAgent
 from agents.double_dqn import DoubleDQNAgent
 import numpy as np
 
@@ -15,7 +15,7 @@ def create_agent(conf=None, env=None, agent = "dqn"):
             observation_space=env.observation_space
         )
     elif agent == "ac":
-        return ActorCriticAgent(
+        return ACAgent(
             action_space=env.action_space,
             observation_space=env.observation_space
         )
@@ -32,10 +32,10 @@ def create_agent(conf=None, env=None, agent = "dqn"):
 
 def run(conf=None, save_path=None):
     if conf is None:
-        conf = {'num_episodes': 500}
+        conf = {'num_episodes': 7000}
     
     env = create_env()
-    agent = create_agent(conf, env, agent = "ddqn")
+    agent = create_agent(conf, env, agent = "ac")
     return_list = []
     best_return = float('-inf')
     
@@ -88,4 +88,4 @@ def run(conf=None, save_path=None):
     return return_list
 
 if __name__ == "__main__":
-    run(save_path="models/ddqn_single.pth")
+    run(save_path="models/ac_single.pth")
