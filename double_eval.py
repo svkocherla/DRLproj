@@ -22,6 +22,18 @@ def create_agent(conf=None, env=None, agent="dqn", model_path=None):
             observation_space=env.observation_space,
         )
 
+SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
+
+def transform_obs(observation):
+    # for second agent in double obs
+    ballx, bally, left, right, speedx, speedy = observation
+
+    ballx = SCREEN_WIDTH - ballx
+    left, right = right, left
+    speedx = -speedx
+
+    return np.array([ballx, bally, left, right, speedx, speedy])
+
 def run(conf=None, model_paths=None):
     if conf is None:
         conf = {'num_episodes': 1000}
@@ -38,13 +50,12 @@ def run(conf=None, model_paths=None):
         agent1.reset()
         agent2.reset()
         
-        # Store first observation
         done = False
         
         while not done:
             # Select action
             action1 = agent1.act(observation)
-            action2 = agent2.act(observation)
+            action2 = agent2.act(transform_obs(observation))
             
             # Take action in environment
             next_observation, reward, done, _ = env.step((action1, action2))

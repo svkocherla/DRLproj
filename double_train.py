@@ -18,6 +18,18 @@ def create_agent(conf=None, env=None, agent = "dqn"):
             action_space=env.action_space, 
             observation_space=env.observation_space,
         )
+    
+SCREEN_WIDTH, SCREEN_HEIGHT = 160, 210
+
+def transform_obs(observation):
+    # for second agent in double obs
+    ballx, bally, left, right, speedx, speedy = observation
+
+    ballx = SCREEN_WIDTH - ballx
+    left, right = right, left
+    speedx = -speedx
+
+    return np.array([ballx, bally, left, right, speedx, speedy])
 
 def run(conf=None, save_path = None):
     if conf is None:
@@ -36,13 +48,12 @@ def run(conf=None, save_path = None):
         train_agent.reset()
         opposing_agent.reset()
         
-        # Store first observation
         done = False
         
         while not done:
             # Select action
             train_action = train_agent.act(observation)
-            opponent_action = opposing_agent.act(observation)
+            opponent_action = opposing_agent.act(transform_obs(observation))
             
             # Take action in environment
             next_observation, reward, done, _ = env.step((train_action, opponent_action))
