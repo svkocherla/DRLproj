@@ -44,7 +44,7 @@ def run(conf=None, model_path=None):
         conf = {'num_episodes': 100}
     
     env = create_env()
-    agent = create_agent(conf, env, agent="dqn", model_path=model_path)
+    agent = create_agent(conf, env, agent="ddqn", model_path=model_path)
     return_list = []
     
     print("Evaluating...")
@@ -74,6 +74,6 @@ def run(conf=None, model_path=None):
     return return_list
 
 if __name__ == "__main__":
-    returns = run(model_path="models/dqn_single.pth")
+    returns = run(model_path="models/m3.pth")
     returns = np.array(returns)
     print(np.mean(returns))

@@ -104,7 +104,9 @@ def run(conf={'num_episodes': 150}, save_path = None, model_paths = None, types 
             print(f"50-episode average: {avg_return:.2f}")
             print(f"Best return: {best_return:.2f}")
             print("--------------------")
-    
+
+        if avg_return > 0:
+            break
     if save_path:
         train_agent.save_model(save_path)
     
@@ -113,6 +115,6 @@ def run(conf={'num_episodes': 150}, save_path = None, model_paths = None, types 
 
 if __name__ == "__main__":
     conf = {
-        "num_episodes": 300
+        "num_episodes": 1000
         }
-    run(conf = conf, save_path = "models/m3.pth", model_paths=["models/dqn_single.pth", "models/dqn_single.pth"], types = ['dqn', 'dqn'])
+    run(conf = conf, save_path = "models/m3.pth", model_paths=["models/ddqn_single.pth", "models/dqn_single.pth"], types = ['ddqn', 'dqn'])

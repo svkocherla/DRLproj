@@ -91,6 +91,6 @@ if __name__ == "__main__":
     conf = {
         "num_episodes": 100
         }
-    returns = run(conf = conf, model_paths=["models/m3.pth", "models/dqn_single.pth"], types = ['dqn', 'dqn'])
+    returns = run(conf = conf, model_paths=["models/m3.pth", "models/dqn_single.pth"], types = ['ddqn', 'dqn'])
     returns = np.array(returns)
     print(np.mean(returns, axis = 0))
